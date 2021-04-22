@@ -2,21 +2,18 @@
   <div id="app" class="w-2/5 mx-auto ">
     <step-bar :step="step"></step-bar>
     <step-form></step-form>
-    <form-step :formStep="step"></form-step>
-    <direction-step
+    <form-step
+      :formStep="step"
       @next-step="nextStep"
       @prev-step="prevStep"
       @reset-form="resetForm"
-      :stepForm="step"
-    >
-    </direction-step>
+    ></form-step>
   </div>
 </template>
 
 <script>
 import StepForm from "./components/StepForm.vue";
 import StepBar from "./components/StepBar.vue";
-import DirectionStep from "./components/DirectionStep.vue";
 import FormStep from "./components/FormStep.vue";
 
 export default {
@@ -24,7 +21,6 @@ export default {
   components: {
     StepForm,
     StepBar,
-    DirectionStep,
     FormStep,
   },
   data() {
@@ -39,9 +35,9 @@ export default {
     prevStep() {
       this.step = this.step - 1;
     },
-    resetForm(){
+    resetForm() {
       this.step = 1;
-    }
+    },
   },
 };
 </script>

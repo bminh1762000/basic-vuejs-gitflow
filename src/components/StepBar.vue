@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-4 mb-4 rounded-3xl">
-    <div class="h-full bg-blue-500 rounded-3xl" :style="backgroundSteps"></div>
+    <div class="h-full bg-blue-500 rounded-3xl step-bar" :style="backgroundSteps"></div>
   </div>
 </template>
 
@@ -20,3 +20,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.step-bar{
+  transition: 0.6s;
+}
+</style>
