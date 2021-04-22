@@ -1,19 +1,45 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app" class="w-2/5 mx-auto ">
+    <step-bar :step="step"></step-bar>
+    <step-form></step-form>
+    <form-step
+      :formStep="step"
+      @next-step="nextStep"
+      @prev-step="prevStep"
+      @reset-form="resetForm"
+    ></form-step>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import StepForm from "./components/StepForm.vue";
+import StepBar from "./components/StepBar.vue";
+import FormStep from "./components/FormStep.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    StepForm,
+    StepBar,
+    FormStep,
+  },
+  data() {
+    return {
+      step: 1,
+    };
+  },
+  methods: {
+    nextStep() {
+      this.step = this.step + 1;
+    },
+    prevStep() {
+      this.step = this.step - 1;
+    },
+    resetForm() {
+      this.step = 1;
+    },
+  },
+};
 </script>
 
 <style>
