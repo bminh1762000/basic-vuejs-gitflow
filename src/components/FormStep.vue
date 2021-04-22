@@ -150,7 +150,7 @@ export default {
       this.fullName = "";
       this.email = "";
       this.companyName = "";
-      this.numberOfEmployees = null;
+      this.numberOfEmployees = null;``
       this.referral = "Friend";
       this.terms = "";
     },
