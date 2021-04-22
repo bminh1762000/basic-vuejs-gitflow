@@ -12,7 +12,9 @@
               :class="{ error: !isFullNameValid }"
               v-model="fullName"
             />
-            <p v-if="!isFullNameValid" class="text-red-500">Please provide full name</p>
+            <p v-if="!isFullNameValid" class="text-red-500">
+              Please provide full name
+            </p>
           </div>
           <div class="form-control">
             <label for="email">Your Email</label>
@@ -23,7 +25,9 @@
               :class="{ error: !isEmailValid }"
               v-model="email"
             />
-            <p v-if="!isEmailValid" class="text-red-500">Please provide your email</p>
+            <p v-if="!isEmailValid" class="text-red-500">
+              Please provide your email
+            </p>
           </div>
         </div>
         <div v-else-if="formStep === 2">
@@ -36,7 +40,9 @@
               :class="{ error: !isCompanyNameValid }"
               v-model="companyName"
             />
-            <p v-if="!isCompanyNameValid" class="text-red-500">Please provide you company name</p>
+            <p v-if="!isCompanyNameValid" class="text-red-500">
+              Please provide you company name
+            </p>
           </div>
           <div class="form-control">
             <label for="employee">Number of Employees</label>
@@ -47,7 +53,9 @@
               :class="{ error: !isNumberEmployeeValid }"
               v-model.number="numberOfEmployees"
             />
-            <p v-if="!isNumberEmployeeValid" class="text-red-500">Enter valid value</p>
+            <p v-if="!isNumberEmployeeValid" class="text-red-500">
+              Enter valid value
+            </p>
           </div>
         </div>
         <div v-else>
@@ -60,9 +68,11 @@
             </select>
           </div>
           <div class="form-control">
-            <input type="checkbox" id="checkbox" v-model="terms" />
-            <span>I accept term & conditions </span>
-            <p v-if="!isTermsValid" class="text-red-500">Please accept our terms</p>
+            <input type="checkbox" v-model="terms" />
+            <label>I accept term & conditions</label>
+            <p v-if="!isTermsValid" class="text-red-500">
+              Please accept our terms
+            </p>
           </div>
         </div>
       </template>
@@ -93,6 +103,13 @@
       >
         Reset
       </button>
+      <button
+        type="submit"
+        @click.prevent="handleSubmit"
+        class="px-5 py-2 bg-green-500 rounded-lg text-white font-semibold"
+      >
+        Submit
+      </button>
     </div>
   </div>
 </template>
@@ -103,7 +120,7 @@ export default {
   name: "FormStep",
   data() {
     return {
-      fullName: null,
+      fullName: "",
       email: "",
       companyName: "",
       numberOfEmployees: null,
@@ -130,6 +147,12 @@ export default {
     },
     formReset() {
       this.$emit("reset-form");
+      this.fullName = "";
+      this.email = "";
+      this.companyName = "";
+      this.numberOfEmployees = null;
+      this.referral = "Friend";
+      this.terms = "";
     },
     validateCurrentStep() {
       if (this.formStep === 1) {
@@ -139,6 +162,10 @@ export default {
       } else {
         return this.isReferralValid && this.isTerms;
       }
+    },
+    handleSubmit() {
+      this.formReset();
+      alert("Submit form successfully.");
     },
   },
   computed: {
