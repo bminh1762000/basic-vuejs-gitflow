@@ -1,7 +1,7 @@
 <template>
   <div>
     <form class="bg-white shadow-xl rounded-2xl mt-9">
-      <template v-if="formStep">
+      <template >
         <div v-if="formStep === 1">
           <div class="form-control">
             <label for="fullName">Full Name</label>
@@ -58,7 +58,7 @@
             </p>
           </div>
         </div>
-        <div v-else>
+        <div v-else-if="formStep === 3">
           <div class="form-control">
             <label for="addr">From where did you hear about you</label>
             <select id="addr" v-model="referral">
@@ -135,6 +135,7 @@ export default {
       required: true,
     },
   },
+
   methods: {
     nextStep() {
       if (!this.validateCurrentStep()) {
