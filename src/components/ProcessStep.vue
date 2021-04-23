@@ -28,6 +28,6 @@
 
 <script>
 export default {
-  name: "StepForm",
+  name: "ProcessStep",
 };
 </script>

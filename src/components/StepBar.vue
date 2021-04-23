@@ -10,10 +10,16 @@
 <script>
 export default {
   name: "StepBar",
-  props: ["step"],
+  props: {
+    step: {
+      type: Number,
+      required: true,
+    },
+  },
   computed: {
     backgroundSteps() {
-      return { width: Math.floor(this.step / 3) + "%" };
+      const width = Math.floor(this.step*100 / 3);
+      return { width: width + "%" };
     },
   },
 };
