@@ -1,7 +1,7 @@
 <template>
   <div>
     <form class="bg-white shadow-xl rounded-2xl mt-9">
-      <template >
+      <template>
         <div v-if="formStep === 1">
           <div class="form-control">
             <label for="fullName">Full Name</label>
@@ -9,12 +9,20 @@
               type="text"
               id="fullName"
               class="block"
-              :class="{ error: !isFullNameValid }"
-              v-model="fullName"
+              :class="{ error: $v.fullName.$error }"
+              v-model.trim="$v.fullName.$model"
             />
-            <p v-if="!isFullNameValid" class="text-red-500">
-              Please provide full name
-            </p>
+            <div class="mt-2">
+              <span
+                v-if="!$v.fullName.required && $v.fullName.$error"
+                class="text-red-500"
+                >Full name is required</span
+              >
+              <span v-if="!$v.fullName.minLength" class="text-red-500"
+                >Full name must have at least
+                {{ $v.fullName.$params.minLength.min }} letters</span
+              >
+            </div>
           </div>
           <div class="form-control">
             <label for="email">Your Email</label>
@@ -22,12 +30,19 @@
               type="email"
               id="email"
               class="block"
-              :class="{ error: !isEmailValid }"
-              v-model="email"
+              :class="{ error: $v.email.$error }"
+              v-model.trim="$v.email.$model"
             />
-            <p v-if="!isEmailValid" class="text-red-500">
-              Please provide your email
-            </p>
+            <div class="mt-2">
+              <span
+                v-if="!$v.email.required && $v.email.$error"
+                class="text-red-500"
+                >Email is required</span
+              >
+              <span v-if="!$v.email.email" class="text-red-500"
+                >Enter valid email
+              </span>
+            </div>
           </div>
         </div>
         <div v-else-if="formStep === 2">
@@ -37,12 +52,20 @@
               type="text"
               id="nameCompany"
               class="block"
-              :class="{ error: !isCompanyNameValid }"
-              v-model="companyName"
+              :class="{ error: $v.companyName.$error }"
+              v-model.trim="$v.companyName.$model"
             />
-            <p v-if="!isCompanyNameValid" class="text-red-500">
-              Please provide you company name
-            </p>
+            <div class="mt-2">
+              <span
+                v-if="!$v.companyName.required && $v.companyName.$error"
+                class="text-red-500"
+                >Full name is required</span
+              >
+              <span v-if="!$v.companyName.minLength" class="text-red-500"
+                >Name of company must have at least
+                {{ $v.companyName.$params.minLength.min }}</span
+              >
+            </div>
           </div>
           <div class="form-control">
             <label for="employee">Number of Employees</label>
@@ -50,29 +73,51 @@
               type="text"
               id="employee"
               class="block"
-              :class="{ error: !isNumberEmployeeValid }"
-              v-model.number="numberOfEmployees"
+              :class="{ error: $v.numberOfEmployees.$error }"
+              v-model.number="$v.numberOfEmployees.$model"
             />
-            <p v-if="!isNumberEmployeeValid" class="text-red-500">
-              Enter valid value
-            </p>
+            <div class="mt-2">
+              <span
+                v-if="
+                  !$v.numberOfEmployees.required && $v.numberOfEmployees.$error
+                "
+                class="text-red-500"
+                >Number of employees are required</span
+              >
+              <span v-if="!$v.numberOfEmployees.numeric" class="text-red-500"
+                >Please enter a number</span
+              >
+            </div>
           </div>
         </div>
         <div v-else-if="formStep === 3">
           <div class="form-control">
             <label for="addr">From where did you hear about you</label>
-            <select id="addr" v-model="referral">
+            <select id="addr" v-model="$v.referral.$model">
               <option v-for="(add, index) in options" :value="add" :key="index">
                 {{ add }}
               </option>
             </select>
+            <div class="mt-2">
+              <span
+                v-if="!$v.referral.required && $v.referral.$error"
+                class="text-red-500"
+                >Referral is required</span
+              >
+            </div>
           </div>
           <div class="form-control">
-            <input type="checkbox" v-model="terms" />
-            <label>I accept term & conditions</label>
-            <p v-if="!isTermsValid" class="text-red-500">
-              Please accept our terms
-            </p>
+            <input type="checkbox" v-model="$v.terms.$model" id="term" />
+            <label class="inline-block ml-3" for="term"
+              >I accept term & conditions</label
+            >
+            <div class="mt-2">
+              <span
+                v-if="!$v.terms.required && $v.terms.$error"
+                class="text-red-500"
+                >Term is required</span
+              >
+            </div>
           </div>
         </div>
       </template>
@@ -95,10 +140,18 @@
         Next
       </button>
     </div>
-    <div class="mt-10" v-else>
+    <div class="mt-10 mx-auto" v-else-if="formStep >= 3">
       <button
         type="button"
-        class="px-5 py-2 bg-blue-500 rounded-lg text-white font-semibold"
+        class="px-5 py-2 bg-green-500 rounded-lg text-white font-semibold mr-3"
+        @click="prevStep"
+        :disabled="isPrevDisable"
+      >
+        Previous
+      </button>
+      <button
+        type="button"
+        class="px-5 py-2 bg-blue-500 rounded-lg text-white font-semibold mr-3"
         @click="formReset"
       >
         Reset
@@ -106,7 +159,7 @@
       <button
         type="submit"
         @click.prevent="handleSubmit"
-        class="px-5 py-2 bg-green-500 rounded-lg text-white font-semibold"
+        class="px-5 py-2 bg-green-500 rounded-lg text-white font-semibold mr-3"
       >
         Submit
       </button>
@@ -115,7 +168,8 @@
 </template>
 
 <script>
-import { required, isEmail, numeric } from "../validator.js";
+import { required, minLength, email, numeric } from "vuelidate/lib/validators";
+
 export default {
   name: "FormStep",
   data() {
@@ -135,10 +189,33 @@ export default {
       required: true,
     },
   },
-
+  validations: {
+    fullName: {
+      required,
+      minLength: minLength(3),
+    },
+    email: {
+      required,
+      email,
+    },
+    companyName: {
+      required,
+      minLength: minLength(4),
+    },
+    numberOfEmployees: {
+      required,
+      numeric,
+    },
+    terms: {
+      required,
+    },
+    referral: {
+      required,
+    },
+  },
   methods: {
     nextStep() {
-      if (!this.validateCurrentStep()) {
+      if (this.validateCurrentStep()) {
         return;
       }
       this.$emit("next-step");
@@ -151,57 +228,41 @@ export default {
       this.fullName = "";
       this.email = "";
       this.companyName = "";
-      this.numberOfEmployees = null;``
+      this.numberOfEmployees = null;
       this.referral = "Friend";
       this.terms = "";
     },
     validateCurrentStep() {
       if (this.formStep === 1) {
-        return this.isFullNameValid && this.isEmailValid;
-      } else if (this.formStep === 2) {
-        return this.isCompanyNameValid && this.numberOfEmployees;
-      } else {
-        return this.isReferralValid && this.isTerms;
+        return this.$v.fullName.$invalid || this.$v.email.$invalid;
       }
+      if (this.formStep === 2) {
+        return (
+          this.$v.companyName.$invalid || this.$v.numberOfEmployees.$invalid
+        );
+      }
+      return this.$v.terms.$invalid || this.$v.referral.$invalid;
     },
     handleSubmit() {
+      if (this.$v.terms.$invalid || this.$v.referral.$invalid) {
+        return;
+      }
       this.formReset();
       alert("Submit form successfully.");
     },
   },
   computed: {
-    isNextDisable() {
-      if (this.formStep >= 3) {
-        return true;
-      }
-      return false;
-    },
     isPrevDisable() {
       if (this.formStep <= 1) {
         return true;
       }
       return false;
     },
-    isFullNameValid() {
-      return required(this.fullName);
-    },
-    isEmailValid() {
-      const isValid = required(this.email) && isEmail(this.email);
-      return isValid;
-    },
-    isCompanyNameValid() {
-      return required(this.companyName);
-    },
-    isNumberEmployeeValid() {
-      return (
-        required(this.numberOfEmployees) && numeric(this.numberOfEmployees)
-      );
-    },
-    isReferralValid() {
-      return required(this.referral);
-    },
-    isTermsValid() {
-      return required(this.terms);
+    isNextDisable() {
+      if (this.formStep >= 3) {
+        return true;
+      }
+      return false;
     },
   },
 };
@@ -217,7 +278,8 @@ form {
   margin-bottom: 0.75rem;
 }
 
-input,
+input[type="text"],
+input[type="email"],
 select {
   width: 100%;
   padding: 0.2rem 0;

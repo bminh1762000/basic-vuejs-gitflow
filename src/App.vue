@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="w-2/5 mx-auto ">
     <step-bar :step="step"></step-bar>
-    <step-form></step-form>
+    <process-step></process-step>
     <form-step
       :formStep="step"
       @next-step="nextStep"
@@ -12,14 +12,14 @@
 </template>
 
 <script>
-import StepForm from "./components/StepForm.vue";
+import ProcessStep from "./components/ProcessStep.vue";
 import StepBar from "./components/StepBar.vue";
 import FormStep from "./components/FormStep.vue";
 
 export default {
   name: "App",
   components: {
-    StepForm,
+    ProcessStep,
     StepBar,
     FormStep,
   },
