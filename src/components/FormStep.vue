@@ -164,6 +164,14 @@
         Submit
       </button>
     </div>
+    <div v-if="isSubmit" class="text-left mt-10">
+      <p>FullName: {{ fullName }}</p>
+      <p>Email: {{ email }}</p>
+      <p>Name of company: {{ companyName }}</p>
+      <p>Number of Employees: {{ numberOfEmployees }}</p>
+      <p>Referral: {{ referral }}</p>
+      <p>FullName: {{ fullName }}</p>
+    </div>
   </div>
 </template>
 
@@ -181,6 +189,7 @@ export default {
       referral: "Friend",
       terms: "",
       options: ["Friend", "Social", "Other"],
+      isSubmit: false,
     };
   },
   props: {
@@ -231,6 +240,7 @@ export default {
       this.numberOfEmployees = null;
       this.referral = "Friend";
       this.terms = "";
+      this.isSubmit = false;
     },
     validateCurrentStep() {
       if (this.formStep === 1) {
@@ -247,7 +257,7 @@ export default {
       if (this.$v.terms.$invalid || this.$v.referral.$invalid) {
         return;
       }
-      this.formReset();
+      this.isSubmit = true;
       alert("Submit form successfully.");
     },
   },
