@@ -1,13 +1,12 @@
-export const required = (value) => value !== "";
+import { extend } from "vee-validate";
+import * as rules from "vee-validate/dist/rules";
+import { messages } from "vee-validate/dist/locale/en.json";
 
-export const isEmail = (value) =>
-  /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/.test(
-    value
-  );
-
-export const numeric = (value) => {
-  if (typeof value === "number") {
-    return true;
-  }
-  return false;
-};
+export default function() {
+  Object.keys(rules).forEach((rule) => {
+    extend(rule, {
+      ...rules[rule],
+      message: messages[rule],
+    });
+  });
+}
