@@ -15,10 +15,14 @@ export default {
       type: Number,
       required: true,
     },
+    totalStep: {
+      type: Number,
+      required: true,
+    },
   },
   computed: {
     backgroundSteps() {
-      const width = Math.floor(this.step*100 / 3);
+      const width = Math.floor((this.step * 100) / this.totalStep);
       return { width: width + "%" };
     },
   },
